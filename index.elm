@@ -54,7 +54,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ Html.text (toString model.dieFace) ]
-        , svgNode dieRect
+        , svgNode (dieFace model.dieFace)
         , button [ onClick Roll ] [ Html.text "Roll" ]
         ]
 
@@ -84,19 +84,65 @@ svgNode node =
         node
 
 
-dieRect : List (Svg msg)
-dieRect =
-    [ rect
-        [ SvgA.x "10"
-        , SvgA.y "10"
-        , SvgA.width "100"
-        , SvgA.height "100"
-        , SvgA.rx "15"
-        , SvgA.ry "15"
-        , SvgA.fill "none"
-        , SvgA.stroke "black"
-        , SvgA.strokeWidth "2"
-        ]
-        []
-        , circle [ SvgA.cx "60", SvgA.cy "60", SvgA.r "20" ] []
-    ]
+dieFace : Int -> List (Svg msg)
+dieFace num =
+    let
+        rectangleCover =
+            [ rect
+                [ SvgA.x "10"
+                , SvgA.y "10"
+                , SvgA.width "100"
+                , SvgA.height "100"
+                , SvgA.rx "15"
+                , SvgA.ry "15"
+                , SvgA.fill "none"
+                , SvgA.stroke "black"
+                , SvgA.strokeWidth "2"
+                ]
+                []
+            ]
+
+        noCircles =
+            case num of
+                1 ->
+                    [ circle [ SvgA.cx "60", SvgA.cy "60", SvgA.r "20" ] [] ]
+
+                2 ->
+                    [ circle [ SvgA.cx "35", SvgA.cy "60", SvgA.r "15" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "60", SvgA.r "15" ] []
+                    ]
+
+                3 ->
+                    [ circle [ SvgA.cx "60", SvgA.cy "40", SvgA.r "15" ] []
+                    , circle [ SvgA.cx "35", SvgA.cy "70", SvgA.r "15" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "70", SvgA.r "15" ] []
+                    ]
+
+                4 ->
+                    [ circle [ SvgA.cx "35", SvgA.cy "40", SvgA.r "15" ] []
+                    , circle [ SvgA.cx "35", SvgA.cy "80", SvgA.r "15" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "40", SvgA.r "15" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "80", SvgA.r "15" ] []
+                    ]
+
+                5 ->
+                    [ circle [ SvgA.cx "35", SvgA.cy "40", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "35", SvgA.cy "80", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "60", SvgA.cy "60", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "40", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "80", SvgA.r "10" ] []
+                    ]
+
+                6 ->
+                    [ circle [ SvgA.cx "35", SvgA.cy "30", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "35", SvgA.cy "60", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "35", SvgA.cy "90", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "30", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "60", SvgA.r "10" ] []
+                    , circle [ SvgA.cx "85", SvgA.cy "90", SvgA.r "10" ] []
+                    ]
+
+                _ ->
+                    []
+    in
+        List.append rectangleCover noCircles
