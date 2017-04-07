@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, button, div)
 import Html.Attributes as HtmlAttr
+import Html.Events exposing (onClick)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Time exposing (Time, second)
@@ -22,7 +23,9 @@ main =
 
 
 type alias Model =
-    Time
+    { time : Time
+    , stopTime : Bool
+    }
 
 
 
@@ -31,7 +34,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( 0, Cmd.none )
+    ( Model 0 False, Cmd.none )
 
 
 
@@ -40,13 +43,17 @@ init =
 
 type Msg
     = Tick Time
+    | StopTime
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick newTime ->
-            ( newTime, Cmd.none )
+            ( { model | time = newTime }, Cmd.none )
+
+        StopTime ->
+            ( { model | stopTime = True }, Cmd.none )
 
 
 
@@ -55,7 +62,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every second Tick
+    if model.stopTime then
+        Sub.none
+    else
+        Time.every second Tick
 
 
 
@@ -66,7 +76,7 @@ view : Model -> Html Msg
 view model =
     let
         angle =
-            turns (Time.inMinutes model)
+            turns (Time.inMinutes model.time)
 
         handX =
             toString (50 + 40 * cos angle)
@@ -79,7 +89,7 @@ view model =
                 [ circle [ cx "50", cy "50", r "45", fill "#0B79CE" ] []
                 , line [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#023963" ] []
                 ]
-            , button []
+            , button [ onClick StopTime ]
                 [ text "stop time"
                 ]
             ]
